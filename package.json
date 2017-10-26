@@ -1,5 +1,5 @@
 {
-  "name": "twitter-client",
+  "name": "craigslist-search",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "blessed": "^0.1.81",
     "cheerio": "^1.0.0-rc.2",
     "http-server": "^0.10.0",
     "request": "^2.83.0"

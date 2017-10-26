@@ -12,10 +12,8 @@ const displayResults = function(foundItems) {
 const dataReady = function(body, callback) {
 
 	let $ = cheerio.load(body);
-	console.log("Data Loaded");
 	let results = $('.result-info');
 	
-	console.log(results.length + " results found.");
 
 	let foundItems = $(results).map(function(i, element) {
 		let itemName = $(element).children("a").text();
@@ -26,7 +24,6 @@ const dataReady = function(body, callback) {
 		return {itemName, itemLink, itemPrice, itemLocation};
 	}).toArray();
 
-	//displayResults(foundItems);
 	callback(foundItems);
 }
 
@@ -37,7 +34,6 @@ const searchFor = function(searchTerm, callback) {
 	request(search, (error, response, body) => {
 		dataReady(body, callback);
 	});
-	console.log(`Query ${search} started.`);
 }
 
 module.exports = { searchFor };

@@ -1,4 +1,5 @@
 const blessed = require("blessed");
+const search = require("./search");
 
 const createResultsBox = function createResultsBox() {
 	let box = blessed.box({
@@ -16,14 +17,15 @@ const createResultsBox = function createResultsBox() {
 		}
 	});
 
+	
 	box.setLabel({text: "Results", side: "left"});
 	return box;
 }
 
-const createSearchBox = function createSearchBox(screen) {
+const createSearchBox = function createSearchBox(searchTextReady) {
 	//create the search box
-	let searchBox = blessed.box( {
-		height: '20%',
+	let searchBox = blessed.textbox( {
+		height: '10%',
 		top: '75%',
 		border: {
 			type: 'line'
@@ -32,31 +34,20 @@ const createSearchBox = function createSearchBox(screen) {
 			bg: 'red',
 			border: {
 				fg: 'white'
+			},
+			focus: {
+				border: { fg: 'blue'}
 			}
 		}
 	});
 	searchBox.setLabel({text: "Search", side: "left"});
 
-	//create the text input for typing in the query
-	let input = blessed.textarea( {
-		style: {
-			fg: 'white',
-			bg: 'blue',
-			height: '40%',
-			focus : {
-				fg: 'blue',
-				bg: 'white'
-			}
-		}
-	});
-	searchBox.append(input);
-
-	searchBox.on("focus", () => input.focus());
-	input.on('focus', () => input.readInput((input) => {
-			searchBox.setText(input);
-			screen.render();	
+	searchBox.on('focus', function() {
+		this.readInput((input) => {
+			//input doesn't seem to have the correct value?
+			searchTextReady(this.value);
 		})	
-	);
+	});
 	
 	return searchBox;
 }
@@ -72,7 +63,6 @@ const createStatusBar = function createStatusBar() {
 		}
 	});
 
-	statusBar.setText("[Q] Quit");
 	return statusBar;
 }
 
@@ -83,13 +73,19 @@ const keyHandler = function(key, statusBar) {
 	}	
 }
 
+const defaultStatusBar = function(statusBar) {
+	let menu = "[S] Search [Q] Quit";
+	statusBar.setText(menu);
+}
+
 const start = function() {
 	
 	let screen = blessed.screen();
 	
 	let resultsBox = createResultsBox();
-	let searchBox = createSearchBox(screen);
 	let statusBar = createStatusBar();
+
+	defaultStatusBar(statusBar);
 
 	screen.key(['q','s'], (key)=> {
 		if(key === 'q') {
@@ -102,6 +98,21 @@ const start = function() {
 			statusBar.setText("Search Mode");
 			screen.render();
 		}
+	});
+
+	let searchBox = createSearchBox((searchTerm) => {
+		//called when input is ready
+		
+		//clear the results box
+		resultsBox.setText("");
+
+		search.searchFor(searchTerm, (results) => {
+			results.map( (result) => {
+				resultsBox.setText(resultsBox.getText() + result.itemName + "\n");
+			});
+			defaultStatusBar(statusBar);
+			screen.render();
+		});
 	});
 
 	screen.append(resultsBox);

@@ -2,7 +2,7 @@ const search = require("./search");
 const readline = require("readline");
 
 const searchReady = function(foundItems) {
-	foundItems.forEach((item) => console.log(item.itemName));
+	foundItems.forEach((item) => console.log(item.itemName + " " + item.itemLocation));
 }
 
 const rl = readline.createInterface( {

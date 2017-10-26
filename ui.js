@@ -160,8 +160,15 @@ const start = function() {
 		//the index starts counting at 2(?)
 		let realIndex = selected.index - 2;
 		let selectedItem = currentResults[realIndex];
-
-		detailsBox.setText(`${selectedItem.itemName}`);
+		let detailString = `${selectedItem.itemName}\n` +
+			`${selectedItem.itemPrice}\n` + 
+			`${selectedItem.itemLink}`;
+		
+		let itemLocation = selectedItem.itemLocation === "" ?
+			selectedItem.itemNearbyLocation : selectedItem.itemLocation;
+		itemLocation = itemLocation.trim();
+ 
+		detailsBox.setText(detailString + "\n" + itemLocation);
 		screen.render();
 	});
 

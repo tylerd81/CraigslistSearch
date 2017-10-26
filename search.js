@@ -19,9 +19,10 @@ const dataReady = function(body, callback) {
 		let itemName = $(element).children("a").text();
 		let itemLink = $(element).children("a").attr("href");
 		let itemPrice = $(element).find(".result-price").text();
-		let itemLocation = $(element).find("result-hood").text();
+		let itemLocation = $(element).find(".result-hood").text();
+		let itemNearbyLocation = $(element).find(".nearby").text();
 		
-		return {itemName, itemLink, itemPrice, itemLocation};
+		return {itemName, itemLink, itemPrice, itemLocation, itemNearbyLocation};
 	}).toArray();
 
 	callback(foundItems);
